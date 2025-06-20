@@ -725,6 +725,10 @@ input:checked + .slider-dim::before {
         font-size: 12px;
         padding: 5px;
     }
+
+    .maplibregl-ctrl-attrib-inner {
+        font-size: 11px;
+    }
 }
 
 
