@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 let nameOfBuildings;
-fs.readFile('public/assets/shapefiles/bell_building.geojson', 'utf8', (err, data) => {
+fs.readFile('assets/shapefiles/bell_building.geojson', 'utf8', (err, data) => {
   if (err) throw err;
   const geojson = JSON.parse(data);
   nameOfBuildings = geojson.features.map(f => f.properties.Name_of_St);
