@@ -1,7 +1,6 @@
 body {
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
     padding: 3%;
     font-family: "Poppins", sans-serif;
     font-weight: 100;
@@ -51,7 +50,7 @@ body {
 
 .left-pane {
     width: 28%;
-    height: 80vh;
+    height: 80%;
     box-sizing: border-box;
     background-color: #cce5ff1f;
     padding: 3%;
