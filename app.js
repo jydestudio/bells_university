@@ -9,7 +9,7 @@ const { exec } = require("child_process");
 
 // const url = "https://futaa.onrender.com";
 // exec(`start chrome --app="${url}"`);
-
+"https://kc.kobotoolbox.org/media/original?media_file=aneehatprecious%2Fattachments%2Fb24eafc23d52430bba582f447039a9a3%2F3c9a0521-beef-4e7f-bb63-30f748310dc9%2F1749992017301.jpg"
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,10 +23,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 let nameOfBuildings;
-fs.readFile('assets/shapefiles/bell_building.geojson', 'utf8', (err, data) => {
+fs.readFile('public/assets/shapefiles/bells_structures.geojson', 'utf8', (err, data) => {
   if (err) throw err;
   const geojson = JSON.parse(data);
-  nameOfBuildings = geojson.features.map(f => f.properties.Name_of_St);
+  nameOfBuildings = geojson.features.map(f => f.properties["Name of Structure"] );
   console.log(nameOfBuildings);
 });
 

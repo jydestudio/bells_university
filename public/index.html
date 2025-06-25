@@ -22,9 +22,7 @@
         <div class="left-pane">
             <div class="tabs">
                 <div class="logos-container">
-                    <!-- <img src="assets/images/1588944940395_ymSquare-removebg-preview.pngg" width="12%"><div></div>
-                    <img src="assets/images/logo.pngg" width="5%"><div></div>
-                    <img src="assets/images/FUTA-LOGO-removebg-preview.pngg" width="10%"><div></div> -->
+                    <img src="assets/images/logo.png" width="12%">
                 </div>
                 
                 <div class="tab active" onclick="switchTab('search')"><i class="fa fa-search"></i></div>
@@ -143,6 +141,17 @@
         compact: false,
         customAttribution: `
             <div style="display: flex; align-items: center; gap: 10px;">
+
+                <a style="display: inline-flex; align-items: center; gap: 5px;">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=200" alt="Profile" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
+                    <span>Aneehat Okesade</span>
+                </a>
+
+                <a style="display: inline-flex; align-items: center; gap: 5px;">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=200" alt="Profile" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
+                    <span>Deborah John</span>
+                </a>
+
                 <a href="https://www.linkedin.com/in/ezekiel-ogungbemi-98a98a1a9/" target="_blank" style="display: inline-flex; align-items: center; gap: 5px;">
                     <img src="assets/images/EzekielFace.jpg" alt="Profile" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
                     <span>Ezekiel Ogungbemi </span>
@@ -152,6 +161,10 @@
                     <img src="assets/images/myFace.jpg" alt="Profile" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">
                     <span>Fatoki Lawrence</span>
                 </a>
+
+                 
+
+
 
                 <a style="display: block;" href="https://www.maptiler.com/copyright/" target="_blank">© MapTiler</a>
                 <a style="display: block;" href="https://www.openstreetmap.org/copyright" target="_blank">© OSM</a>
@@ -391,6 +404,17 @@
     });
 
 
+
+
+
+    function toSentenceCase(str) {
+        if (!str) return "";
+        str = str.trim();
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    }
+
+
+
     map.on('load', () => {
         
             
@@ -412,8 +436,8 @@
             'paint': {
                 'fill-extrusion-color': [
                     'interpolate', ['linear'], ['get', 'render_height'],
-                    0, '#253494',    // Low buildings (soft green)
-                    5, '#a1dab4',    // Medium buildings (turquoise)
+                    0, '#D2B48C',    // Low buildings (soft green)
+                    5, '#D2B48C',    // Medium buildings (turquoise)
                     10, '#2c7fb8',   // Tall buildings (blue)
                     15, '#253494'    // Very tall buildings (deep indigo)
                 ],
@@ -446,7 +470,7 @@
         .catch(error => console.error('Error loading GeoJSON:', error));
 
 
-        fetch('assets/shapefiles/bell_building.geojson')
+        fetch('assets/shapefiles/bells_structures.geojson')
             .then(response => response.json())
             .then(data => {
                 map.addSource('building', {
@@ -469,7 +493,7 @@
         .catch(error => console.error('Error loading GeoJSON:', error));
     });
 
-        fetch('assets/shapefiles/bell_building.geojson')
+        fetch('assets/shapefiles/bells_structures.geojson')
             .then(response => response.json())
             .then(data => {
                 searchTerms = ["COLLEGE OF ENGINEERING", "Prof Raifu Isola Salawu Gazebo ( Engineering Gazebo )"];
@@ -477,8 +501,8 @@
                     searchTerm = searchTerm.toLowerCase().trim();
                     console.log(data)
                     const filteredData = data.features.find(feature => 
-                        feature.properties["Name_of_St"] &&
-                        feature.properties["Name_of_St"].toLowerCase().includes(searchTerm)
+                        feature.properties["Name of Structure"] &&
+                        feature.properties["Name of Structure"].toLowerCase().includes(searchTerm)
                     );
                     let filteredDataCoord = filteredData.geometry.coordinates;
                     console.log(filteredDataCoord);
@@ -496,7 +520,10 @@
 
                     const pop = new maplibregl.Popup({ closeOnClick: true, closeButton: false })
                         .setLngLat(filteredDataCoord)
-                        .setHTML(`<div class="popup" style="font-size: 12px;">${filteredData.properties["Name_of_St"].slice(0,50)}...</div>`) // Tooltip content
+                        .setHTML(`<div class="popup" style="font-size: 12px;">
+                            <h5>${toSentenceCase(filteredData.properties["Name of Structure"].slice(0,50))}...</h5>
+                            <div><i class="fas fa-university"></i> <span>${filteredData.properties["Type of Structure"] || "N/A"}</span></div>
+                        </div>`) // Tooltip content
     
                     new maplibregl.Marker({ element: markerElement })
                         .setLngLat([lon, lat])
@@ -508,18 +535,21 @@
                 
 
                 const firstItem = data.features.find(feature => 
-                        feature.properties["Name_of_St"] &&
-                        feature.properties["Name_of_St"].toLowerCase().includes("COLLEGE OF ENGINEERING".trim().toLocaleLowerCase())
+                        feature.properties["Name of Structure"] &&
+                        feature.properties["Name of Structure"].toLowerCase().includes("COLLEGE OF ENGINEERING".trim().toLocaleLowerCase())
                     );
 
-                searchBox.placeholder = firstItem.properties["Name_of_St"].replace(/\s+/g, ' ').trim();;
+                searchBox.placeholder = firstItem.properties["Name of Structure"].replace(/\s+/g, ' ').trim();;
                 let coord = firstItem.geometry.coordinates;
                 let latitude = coord[1];
                 let longitude = coord[0];
 
                 const popup = new maplibregl.Popup({ closeOnClick: true, closeButton: true})
                     .setLngLat(coord)
-                    .setHTML(`<div class="popup" style="font-size: 12px;">${firstItem.properties["Name_of_St"].slice(0,50)}...</div>`) // Tooltip content
+                    .setHTML(`<div class="popup" style="font-size: 12px;">
+                        <h5>${toSentenceCase(firstItem.properties["Name of Structure"].slice(0,50))}...</h5>
+                        <div><i class="fas fa-university"></i> <span>${firstItem.properties["Type of Structure"] || "N/A"}</span></div>
+                    </div>`) // Tooltip content
                 
                 marker = new maplibregl.Marker({ color: '#e60026' })
                     .setLngLat([longitude, latitude])
@@ -606,7 +636,10 @@
 
             const popup = new maplibregl.Popup({ closeOnClick: true, closeButton: true })
                 .setLngLat(coord)
-                .setHTML(`<div class="popup" style="font-size: 12px;">${feature.properties["Name_of_St"].slice(0,50)}...</div>`) // Tooltip content
+                .setHTML(`<div class="popup" style="font-size: 12px;">
+                    <h5>${toSentenceCase(feature.properties["Name of Structure"].slice(0,50))}...</h5>
+                    <div><i class="fas fa-university"></i> <span>${feature.properties["Type of Structure"] || "N/A"}</span></div>
+                </div>`) // Tooltip content
             
             marker = new maplibregl.Marker({ color: '#e60026' })
                 .setLngLat([longitude, latitude])
@@ -622,8 +655,11 @@
             longitude = coord[0];
 
             const popup = new maplibregl.Popup({ closeOnClick: true, closeButton: true })
-                .setLngLat(coord)
-                .setHTML(`<div class="popup" style="font-size: 12px;">${feature.properties["Name_of_St"].slice(0,50)}...</div>`) // Tooltip content
+                .setLngLat(coord)                       
+                .setHTML(`<div class="popup" style="font-size: 12px;">
+                    <h5>${toSentenceCase(feature.properties["Name of Structure"].slice(0,50))}...</h5>
+                    <div><i class="fas fa-university"></i> <span>${feature.properties["Type of Structure"] || "N/A"}</span></div>
+                </div>`) // Tooltip content
             
             marker = new maplibregl.Marker({ color: '#e60026' })
                 .setLngLat([longitude, latitude])
@@ -669,7 +705,10 @@
 
             const popup = new maplibregl.Popup({ closeOnClick: true, closeButton: true })
                 .setLngLat(coord)
-                .setHTML(`<div class="popup" style="font-size: 12px;">${feature.properties["Name_of_St"].slice(0,50)}...</div>`) // Tooltip content
+                .setHTML(`<div class="popup" style="font-size: 12px;">
+                    <h5>${toSentenceCase(feature.properties["Name of Structure"].slice(0,50))}...</h5>
+                    <div><i class="fas fa-university"></i> <span>${feature.properties["Type of Structure"] || "N/A"}</span></div>
+                </div>`) // Tooltip content
                 .addTo(map);
 
             map.on('click', 'line-layer', function (e) {
@@ -678,7 +717,10 @@
 
                 new maplibregl.Popup({ closeOnClick: true, closeButton: true })
                     .setLngLat(coordinates)
-                    .setHTML(`<div class="popup" style="font-size: 12px;">${feature.properties["Name_of_St"].slice(0,50)}...</div>`) // Tooltip content
+                    .setHTML(`<div class="popup" style="font-size: 12px;">
+                        <h5>${toSentenceCase(feature.properties["Name of Structure"].slice(0,50))}...</h5>
+                        <div><i class="fas fa-university"></i> <span>${feature.properties["Type of Structure"] || "N/A"}</span></div>
+                    </div>`) // Tooltip content
                     .addTo(map);
             });
 
@@ -707,15 +749,15 @@
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
 
-        fetch('assets/shapefiles/bell_building.geojson')
+        fetch('assets/shapefiles/bells_structures.geojson')
             .then(response => response.json())
             .then(data => {
                 const geojsonData = data; // Assign the fetched data
                 console.log(geojsonData)
 
                 const filteredData = geojsonData.features.filter(feature => 
-                    feature.properties["Name_of_St"] &&
-                    feature.properties["Name_of_St"].toLowerCase().includes(searchTerm)
+                    feature.properties["Name of Structure"] &&
+                    feature.properties["Name of Structure"].toLowerCase().includes(searchTerm)
                 );
                 
                 // console.log(searchTerm);
@@ -723,10 +765,10 @@
                 resultsList.innerHTML = '';
                 filteredData.forEach(feature => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = feature.properties['Name_of_St'];
+                    listItem.textContent = feature.properties['Name of Structure'];
                     listItem.addEventListener('click', () => {
                         searchBox.value = "";
-                        searchBox.placeholder = feature.properties['Name_of_St'].replace(/\s+/g, ' ').trim();
+                        searchBox.placeholder = feature.properties['Name of Structure'].replace(/\s+/g, ' ').trim();
 
                         addFilteredData(feature);
                         
@@ -954,14 +996,14 @@ async function sendMessage() {
         scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
         
         
-        fetch('assets/shapefiles/bell_building.geojson')
+        fetch('assets/shapefiles/bells_structures.geojson')
             .then(response => response.json())
             .then(geoData => {
                 const geojsonData = geoData; // Assign the fetched data
                 searchTerm = data.reply.toLowerCase().trim();
                 const filteredData = geojsonData.features.find(feature => 
-                    feature.properties["Name_of_St"] &&
-                    feature.properties["Name_of_St"].toLowerCase().includes(searchTerm)
+                    feature.properties["Name of Structure"] &&
+                    feature.properties["Name of Structure"].toLowerCase().includes(searchTerm)
                 );
 
                 addFilteredData(filteredData);
