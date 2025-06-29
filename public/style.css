@@ -337,7 +337,7 @@ input:focus {
   padding-right: 10px;
   max-width: 100%;
   overflow: hidden;
-  line-height: 12px;
+  line-height: 10px;
 } 
 
 
@@ -784,7 +784,7 @@ input:checked + .slider-dim::before {
     }
 
     .maplibregl-ctrl-attrib-inner {
-        font-size: 11px;
+        font-size: 9px;
     }
 }
 
