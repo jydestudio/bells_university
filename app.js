@@ -22,13 +22,24 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
 
-let nameOfBuildings;
-fs.readFile('public/assets/shapefiles/bells_structures.geojson', 'utf8', (err, data) => {
+let nameOfBuildings = [];
+
+fs.readFile('public/assets/shapefiles/floor_plan.json', 'utf8', (err, data) => {
   if (err) throw err;
-  const geojson = JSON.parse(data);
-  nameOfBuildings = geojson.features.map(f => f.properties["Name of Structure"] );
-  console.log(nameOfBuildings);
+  const floorPlanGeojson = JSON.parse(data);
+  const floorPlanNames = floorPlanGeojson.features.map(f => f.properties.name);
+  nameOfBuildings = nameOfBuildings.concat(floorPlanNames);
+
+  fs.readFile('public/assets/shapefiles/upper_flow.json', 'utf8', (err, data) => {
+    if (err) throw err;
+    const upperFlowGeojson = JSON.parse(data);
+    const upperFlowNames = upperFlowGeojson.features.map(f => f.properties.name);
+    nameOfBuildings = nameOfBuildings.concat(upperFlowNames);
+
+    console.log(nameOfBuildings);
+  });
 });
+
 
 app.get("/ask-ai", async (req, res) => {
     const userQuestion = req.query.message.toLowerCase();  // Get the question from frontend
